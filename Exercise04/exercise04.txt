@@ -1,0 +1,20 @@
+Exercise 4: Gather replaced with Reduce (sum_reduce.c)
+Run on: Debian Linux container (Docker), Open MPI 5.0.7, gcc 14.2, 8 cpus.
+
+Changes from Exercise 3:
+- all_sums and root's manual summing loop are removed.
+- MPI_Reduce(&local_sum, &total_sum, 1, MPI_LONG_LONG, MPI_SUM, 0, MPI_COMM_WORLD)
+  adds all the local sums and puts the total on root.
+- total_sum is only valid on root, so only root prints it.
+
+Output (4 processes):
+Root filled array with values 1 to 1000000
+  Rank 1: summed 250000 elements => local_sum = 93750125000
+  Rank 3: summed 250000 elements => local_sum = 218750125000
+  Rank 0: summed 250000 elements => local_sum = 31250125000
+
+[Reduce] Total sum   = 500000500000
+[Reduce] Expected    = 500000500000
+[Reduce] Correct?    = YES
+[Reduce] Time        = 0.0018 sec
+  Rank 2: summed 250000 elements => local_sum = 156250125000

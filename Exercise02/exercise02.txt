@@ -1,0 +1,25 @@
+Exercise 2: Broadcast replaced with Scatter (sum_scatter.c)
+Run on: Debian Linux container (Docker), Open MPI 5.0.7, gcc 14.2, 8 cpus.
+
+Changes from Exercise 1:
+- Only root (rank 0) allocates and fills the full 1,000,000-element array.
+- Every process allocates only local_chunk with N / size elements (250,000 with 4 processes).
+- MPI_Bcast is replaced by MPI_Scatter(array, chunk_size, MPI_INT, local_chunk, chunk_size,
+  MPI_INT, 0, MPI_COMM_WORLD). sendcount is chunk_size (elements per process), not N.
+- The local loop now goes over local_chunk[0 .. chunk_size).
+- The Send/Recv collection is unchanged.
+
+Output (4 processes):
+Root filled array with values 1 to 1000000
+  Rank 2: summed 250000 elements => local_sum = 156250125000
+  Rank 3: summed 250000 elements => local_sum = 218750125000
+  Rank 0: summed 250000 elements => local_sum = 31250125000
+
+[Scatter] Total sum   = 500000500000
+[Scatter] Expected    = 500000500000
+[Scatter] Correct?    = YES
+[Scatter] Time        = 0.0017 sec
+  Rank 1: summed 250000 elements => local_sum = 93750125000
+
+The total is still 500,000,500,000. Each process now receives and stores only a quarter
+of the array, instead of a full copy.

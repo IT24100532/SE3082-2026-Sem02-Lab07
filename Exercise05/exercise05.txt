@@ -1,0 +1,23 @@
+Exercise 5: Reduce replaced with Allreduce (sum_allreduce.c)
+Run on: Debian Linux container (Docker), Open MPI 5.0.7, gcc 14.2, 8 cpus.
+
+Changes from Exercise 4:
+- MPI_Allreduce(&local_sum, &total_sum, 1, MPI_LONG_LONG, MPI_SUM, MPI_COMM_WORLD)
+  (no root parameter) gives the total to EVERY process.
+- Every process prints its local_sum, the total and its share of the total in percent.
+- Root still prints the check.
+
+Output (4 processes):
+Root filled array with values 1 to 1000000
+  Rank 0: local_sum = 31250125000, total_sum = 500000500000, share = 6.25%
+
+[Allreduce] Total sum   = 500000500000
+[Allreduce] Expected    = 500000500000
+[Allreduce] Correct?    = YES
+[Allreduce] Time        = 0.0018 sec
+  Rank 3: local_sum = 218750125000, total_sum = 500000500000, share = 43.75%
+  Rank 1: local_sum = 93750125000, total_sum = 500000500000, share = 18.75%
+  Rank 2: local_sum = 156250125000, total_sum = 500000500000, share = 31.25%
+
+The shares grow with the rank (6.25%, 18.75%, 31.25%, 43.75%) because the later chunks
+hold bigger numbers. They add up to 100%.
